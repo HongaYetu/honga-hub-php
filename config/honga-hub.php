@@ -17,6 +17,8 @@ return [
     'discord' => [
         'activo' => (bool) env('HONGAHUB_DISCORD_ACTIVO', env('APP_ENV') === 'production'),
         'canal_forcado' => env('HONGAHUB_DISCORD_CANAL_FORCADO'),
+        // `producao` para forçar o ambiente quando o APP_ENV não diz a verdade.
+        'ambiente' => env('HONGAHUB_DISCORD_AMBIENTE'),
         // O nome do serviço nos títulos do resumo diário.
         'nome_servico' => env('HONGAHUB_DISCORD_NOME', env('APP_NAME')),
         // Cada excepção reportada vai para o #erros (agrupada por ficheiro + linha).

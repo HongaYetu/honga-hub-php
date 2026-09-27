@@ -90,6 +90,12 @@ class Discord
      */
     public static function ambiente(): string
     {
+        // Um serviço de produção com o APP_ENV errado (o Humbi esteve a `local`)
+        // declara-o aqui, sem mexer no resto da aplicação.
+        if ($declarado = config('honga-hub.discord.ambiente')) {
+            return (string) $declarado;
+        }
+
         return match ($env = (string) config('app.env')) {
             'production' => 'producao',
             'local' => 'dev',
