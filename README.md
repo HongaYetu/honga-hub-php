@@ -122,3 +122,48 @@ $maka->atualizarIdentidades([
 ```
 
 Alternativa sem webhook: configurar no painel da central a **estratégia de resolução Postgres** do serviço (consulta SQL por tipo de identidade, TTL configurável) — o servidor refresca nome/foto diretamente da base do serviço nas leituras.
+
+## Discord de administração (0.2)
+
+O serviço publica no Discord da Honga Yetu **através do hub** — nunca fala com o
+Discord. Usa o `HONGAHUB_CHAVE_SERVICO` e o `HONGAHUB_JWT_SEGREDO` que já tem.
+Ligado por omissão só em produção (`HONGAHUB_DISCORD_ACTIVO`).
+
+O que se ganha só por actualizar o pacote:
+
+- **#erros** — cada excepção reportada, agrupada por ficheiro + linha, com as
+  ocorrências contadas e os dados pessoais tapados;
+- **#criticos** — tarefas agendadas que falham (e que fecham quando voltam a
+  correr) e as chaves de log de `honga-hub.discord.logs_criticos`.
+
+O que o serviço escreve:
+
+```php
+// Uma mensagem, ou um post num fórum *-pendentes com botões
+use Hongayetu\HongaHub\Discord\Discord;
+
+Discord::publicar([
+    'canal' => 'salu-pendentes',
+    'referencia' => "kyc:{$kyc->id}",
+    'titulo' => 'Verificação de prestador',
+    'botoes' => [
+        ['accao' => 'kyc.aprovar', 'rotulo' => 'Aprovar', 'estilo' => 'sucesso', 'dados' => ['kyc_id' => $kyc->id]],
+        ['accao' => 'kyc.recusar', 'rotulo' => 'Recusar', 'estilo' => 'perigo', 'pede_motivo' => true, 'dados' => ['kyc_id' => $kyc->id]],
+    ],
+]);
+
+Discord::resolver("kyc:{$kyc->id}", 'Aprovado no painel');   // decidido fora do Discord
+```
+
+```php
+// routes/api.php — o conector dos botões: <conector_base_url>/discord/accao
+Route::hubDiscordAccoes('/discord/accao');
+
+// config/honga-hub.php
+'discord' => ['accoes' => ['kyc.aprovar' => AprovarKyc::class, ...]],
+```
+
+Cada acção implementa `Discord\Accoes\AccaoDiscord` e decide quem pode:
+`$pedido->hongaUserId` é a conta Honga Yetu (`public.users.id`) ligada ao
+Discord de quem clicou. Resumo diário: secções `Discord\Resumo\Seccao` em
+`discord.resumo`, publicadas às 23:00 (`hub:discord-resumo --simular` para ver).
