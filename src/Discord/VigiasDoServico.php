@@ -23,6 +23,12 @@ class VigiasDoServico
 {
     public function tarefaFinalizada(ScheduledTaskFinished|ScheduledBackgroundTaskFinished $evento): void
     {
+        // Em segundo plano, o ScheduledTaskFinished sai no lançamento, sem código
+        // de saída: contado como sucesso, fechava e reabria o alerta a cada volta.
+        if ($evento instanceof ScheduledTaskFinished && $evento->task->runInBackground) {
+            return;
+        }
+
         $this->tarefa($evento->task, (int) ($evento->task->exitCode ?? 0), null);
     }
 
