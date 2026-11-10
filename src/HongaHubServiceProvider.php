@@ -113,7 +113,11 @@ class HongaHubServiceProvider extends ServiceProvider
             $this->callAfterResolving(\Illuminate\Console\Scheduling\Schedule::class, function ($schedule) {
                 if (config('honga-hub.discord.resumo')) {
                     $schedule->command('hub:discord-resumo')
-                        ->dailyAt((string) config('honga-hub.discord.resumo_hora', '23:00'))
+                        // Dez minutos depois da central (23:00 em Luanda), que abre o #resumo-diario com
+                        // «Resumo de <dia>»: assim essa mensagem é sempre a primeira. A hora é de Luanda
+                        // seja qual for a timezone da app (em UTC, as 23:00 eram a meia-noite de Luanda).
+                        ->dailyAt((string) config('honga-hub.discord.resumo_hora', '23:10'))
+                        ->timezone((string) config('honga-hub.discord.resumo_fuso', 'Africa/Luanda'))
                         ->name('hub-discord-resumo')
                         ->withoutOverlapping()
                         ->onOneServer();

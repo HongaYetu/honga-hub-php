@@ -166,4 +166,4 @@ Route::hubDiscordAccoes('/discord/accao');
 Cada acção implementa `Discord\Accoes\AccaoDiscord` e decide quem pode:
 `$pedido->hongaUserId` é a conta Honga Yetu (`public.users.id`) ligada ao
 Discord de quem clicou. Resumo diário: secções `Discord\Resumo\Seccao` em
-`discord.resumo`, publicadas às 23:00 (`hub:discord-resumo --simular` para ver).
+`discord.resumo`, publicadas às 23:10 de Luanda, depois da abertura da central (`hub:discord-resumo --simular` para ver).

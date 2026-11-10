@@ -31,7 +31,8 @@ return [
         'tarefas_de_dinheiro' => ['cobrar', 'pagamento', 'payout', 'levantamento', 'factura', 'reconcil', 'renovar'],
         // As secções do resumo diário (Discord\Resumo\Seccao), por ordem. Vazio = sem resumo.
         'resumo' => [],
-        // Hora do resumo diário, na timezone da app.
-        'resumo_hora' => env('HONGAHUB_DISCORD_RESUMO_HORA', '23:00'),
+        // Hora do resumo diário, em Luanda: dez minutos depois da abertura que a central publica às 23:00.
+        'resumo_hora' => env('HONGAHUB_DISCORD_RESUMO_HORA', '23:10'),
+        'resumo_fuso' => env('HONGAHUB_DISCORD_RESUMO_FUSO', 'Africa/Luanda'),
     ],
 ];
